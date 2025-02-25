@@ -39,3 +39,23 @@ WHERE a.Nivel = 'Júnior'
 AND b.Categoria = 'Compacto'
 AND c.Preco BETWEEN 100 AND 200
 GROUP BY a.Nome; 
+
+-- Consulta 1: Selecionar o nome do mecânico e o número de carros que ele reparou, considerando que um mecânico pode ter reparado mais de um carro.
+SELECT m.Nome, COUNT(c.ID) AS NumeroCarros
+FROM Mecanicos m    
+JOIN Carros c ON m.ID = c.MecanicoID
+GROUP BY m.Nome;
+
+-- Consulta 2: Selecionar o nome da peça e o número de carros que usam a peça, considerando que uma peça pode ser usada em mais de um carro.
+SELECT p.Nome, COUNT(cp.CarroID) AS NumeroCarros
+FROM Pecas p
+JOIN CarrosPecas cp ON p.ID = cp.PecaID
+GROUP BY p.Nome;
+
+-- Consulta 3: Selecionar o nome do mecânico e o número de peças que ele usou, considerando que um mecânico pode ter usado mais de uma peça.
+SELECT m.Nome, COUNT(cp.PecaID) AS NumeroPecas
+FROM Mecanicos m    
+JOIN Carros c ON m.ID = c.MecanicoID
+JOIN CarrosPecas cp ON c.ID = cp.CarroID
+GROUP BY m.Nome;
+

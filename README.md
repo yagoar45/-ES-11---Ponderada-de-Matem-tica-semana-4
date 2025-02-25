@@ -13,7 +13,7 @@ Este projeto apresenta uma análise aprofundada de modelagem de dados focando em
 
 ### Diagrama de Relacionamento
 
-![Diagrama de Relacionamento](diagrama.png)
+<img src="ponderada.drawio.png" alt="Diagrama de Relacionamento">
 
 ## Tabelas
 
@@ -81,6 +81,11 @@ JOIN Carros c ON m.ID = c.MecanicoID
 JOIN CarrosPecas cp ON c.ID = cp.CarroID
 GROUP BY m.Nome;
 ```
+
+
+##  SQL em uma equação usando álgebra relacional
+
+
 
 
 
