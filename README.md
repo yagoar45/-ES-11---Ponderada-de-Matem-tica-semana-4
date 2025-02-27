@@ -63,6 +63,11 @@ JOIN Carros c ON m.ID = c.MecanicoID
 GROUP BY m.Nome;
 ```
 
+**Álgebra Relacional:**
+```
+γ Nome, COUNT(c.ID)->NumeroCarros (Mecanicos ⨝ Carros)
+```
+
 2. Selecionar o nome da peça e o número de carros que usam a peça, considerando que uma peça pode ser usada em mais de um carro.    
 
 ```sql
@@ -71,6 +76,11 @@ FROM Pecas p
 JOIN CarrosPecas cp ON p.ID = cp.PecaID
 GROUP BY p.Nome;
 ``` 
+
+**Álgebra Relacional:**
+```
+γ Nome, COUNT(CarroID)->NumeroCarros (Pecas ⨝ CarrosPecas)
+```
 
 3. Selecionar o nome do mecânico e o número de peças que ele usou, considerando que um mecânico pode ter usado mais de uma peça.
 
@@ -82,8 +92,22 @@ JOIN CarrosPecas cp ON c.ID = cp.CarroID
 GROUP BY m.Nome;
 ```
 
+**Álgebra Relacional:**
+```
+γ Nome, COUNT(PecaID)->NumeroPecas (Mecanicos ⨝ Carros ⨝ CarrosPecas)
+```
 
-##  SQL em uma equação usando álgebra relacional
+## Explicação dos Operadores
+
+- γ : Operador de agregação (GROUP BY)
+- ⨝ : Junção natural (JOIN)
+- → : Indica renomeação do resultado da agregação
+- COUNT(): Função de agregação que conta registros
+
+Cada equação representa:
+1. Agrupa por Nome do Mecânico após junção entre Mecanicos e Carros
+2. Agrupa por Nome da Peça após junção entre Pecas e CarrosPecas
+3. Agrupa por Nome do Mecânico após junções sequenciais entre Mecanicos, Carros e CarrosPecas
 
 
 
