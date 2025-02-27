@@ -54,60 +54,61 @@ Este projeto apresenta uma análise aprofundada de modelagem de dados focando em
 
 ## Consultas SQL    
 
-1. Selecionar o nome do mecânico e o número de carros que ele reparou, considerando que um mecânico pode ter reparado mais de um carro.
+1. Demonstrando relação 1:N (Mecânicos -> Carros): Selecionar mecânicos e os carros que eles consertam:
 
 ```sql
-SELECT m.Nome, COUNT(c.ID) AS NumeroCarros
-FROM Mecanicos m    
+SELECT m.Nome, m.Nivel, c.Modelo, c.Placa
+FROM Mecanicos m
 JOIN Carros c ON m.ID = c.MecanicoID
-GROUP BY m.Nome;
+WHERE m.Especialidade = 'Motor';
 ```
 
 **Álgebra Relacional:**
 ```
-γ Nome, COUNT(c.ID)->NumeroCarros (Mecanicos ⨝ Carros)
+π Nome, Nivel, Modelo, Placa (σ Especialidade='Motor' (Mecanicos ⨝ Carros))
 ```
 
-2. Selecionar o nome da peça e o número de carros que usam a peça, considerando que uma peça pode ser usada em mais de um carro.    
+2. Demonstrando relação N:N (Carros <-> Peças): Selecionar carros e suas respectivas peças:    
 
 ```sql
-SELECT p.Nome, COUNT(cp.CarroID) AS NumeroCarros
-FROM Pecas p
-JOIN CarrosPecas cp ON p.ID = cp.PecaID
-GROUP BY p.Nome;
+SELECT c.Modelo, c.Placa, p.Nome as NomePeca, p.Fabricante
+FROM Carros c
+JOIN CarrosPecas cp ON c.ID = cp.CarroID
+JOIN Pecas p ON cp.PecaID = p.ID
+WHERE p.Preco > 100;
 ``` 
 
 **Álgebra Relacional:**
 ```
-γ Nome, COUNT(CarroID)->NumeroCarros (Pecas ⨝ CarrosPecas)
+π Modelo, Placa, Nome, Fabricante (σ Preco>100 (Carros ⨝ CarrosPecas ⨝ Pecas))
 ```
 
-3. Selecionar o nome do mecânico e o número de peças que ele usou, considerando que um mecânico pode ter usado mais de uma peça.
+3. Combinando relações 1:N e N:N: Selecionar mecânicos, seus carros e as peças utilizadas:
 
 ```sql
-SELECT m.Nome, COUNT(cp.PecaID) AS NumeroPecas
-FROM Mecanicos m    
+SELECT m.Nome as Mecanico, c.Modelo, p.Nome as Peca
+FROM Mecanicos m
 JOIN Carros c ON m.ID = c.MecanicoID
 JOIN CarrosPecas cp ON c.ID = cp.CarroID
-GROUP BY m.Nome;
+JOIN Pecas p ON cp.PecaID = p.ID
+WHERE m.Nivel = 'Senior';
 ```
 
 **Álgebra Relacional:**
 ```
-γ Nome, COUNT(PecaID)->NumeroPecas (Mecanicos ⨝ Carros ⨝ CarrosPecas)
+π Nome, Modelo, Peca (σ Nivel='Senior' (Mecanicos ⨝ Carros ⨝ CarrosPecas ⨝ Pecas))
 ```
 
 ## Explicação dos Operadores
 
-- γ : Operador de agregação (GROUP BY)
-- ⨝ : Junção natural (JOIN)
-- → : Indica renomeação do resultado da agregação
-- COUNT(): Função de agregação que conta registros
+- σ (sigma): Operador de Seleção (WHERE)
+- π (pi): Operador de Projeção (SELECT)
+- ⨝ (join): Operador de Junção Natural (JOIN)
 
 Cada equação representa:
-1. Agrupa por Nome do Mecânico após junção entre Mecanicos e Carros
-2. Agrupa por Nome da Peça após junção entre Pecas e CarrosPecas
-3. Agrupa por Nome do Mecânico após junções sequenciais entre Mecanicos, Carros e CarrosPecas
+1. Projeta atributos após junção 1:N entre Mecanicos e Carros
+2. Projeta atributos após junção N:N entre Carros e Pecas através da tabela CarrosPecas
+3. Projeta atributos após combinar todas as relações (1:N e N:N)
 
 
 
